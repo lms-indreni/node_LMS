@@ -20,4 +20,16 @@ module.exports = class UsersRepository {
             });
         });
     }
+    saveUsers(users){
+        return new Promise((resolve,reject)=>{
+            connection.query("insert into users set ?",users,(err,results)=>{
+                if(err){
+                    console.log(err);
+                    reject(null);
+                
+                }
+                resolve(results);
+            });
+        });
+    }
 }
