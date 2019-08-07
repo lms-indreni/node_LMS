@@ -31,6 +31,39 @@ var userController ={
         var user = await userRepository.saveUsers(users);
         res.status(201);
         res.send();
+    },
+    show: async (req,res) => {
+       var code = req.params.code;
+       var users = await userRepository.getUsersByCode(code);
+       res.send(users);
+    },
+    updateOrInsert: async (req,res) => {
+        var data = req.body;
+        var code = data.code;
+
+        var users = await userRepository.getUsersByCode(code);
+        console.log(users);
+        if(users){
+            await userRepository.updateUsersByCode(data,code);
+
+        } else {
+            let users = new Users();
+            users = Object.assign(users,data);
+            await userRepository.saveUsers(data);
+        }
+        res.status(200).json();
+    },
+    update: async (req,res)=>{
+        var code = req.params.code;
+        var data = req.body;
+        var users = await userRepository.updateUsersByCode(data,code);
+        res.send(users);
+    },
+
+    delete:async(req,res)=>{
+        var code= req.params.code;
+        var result = userRepository.deleteUsers(code);
+        res.send(result);
     }
 }
 module.exports = userController;

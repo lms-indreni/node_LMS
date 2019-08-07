@@ -20,6 +20,20 @@ module.exports = class UsersRepository {
             });
         });
     }
+    getUsersByCode(code) {
+       return new Promise ((resolve,reject) =>{
+           connection.query("select * from users where code = ? and deleted_at is null", code , (err, results)=>{
+               if(err){
+                   console.log(err);
+                   reject(null);
+               }
+               let result = results[0];
+               let users = new Users();
+               users = Object.assign(users,result );
+               resolve(users);
+           })
+       })
+    }
     saveUsers(users){
         return new Promise((resolve,reject)=>{
             connection.query("insert into users set ?",users,(err,results)=>{
@@ -32,4 +46,31 @@ module.exports = class UsersRepository {
             });
         });
     }
+    updateUsersByCode(users,code){
+        return new Promise((resolve,reject)=>{
+           console.log( connection.query("update users set ? where code = ?", [users,code],(err, results)=>{
+                if (err){
+                    console.log(err)
+                    reject(null);
+                }
+                resolve(results);
+            }));
+        });
+    }
+
+    deleteUsers(code){
+        return new Promise((resolve,reject)=>{
+            connection.query("update users set deleted_at = current_timestamp where code = ?", code,(err,results)=>{
+                if(err){
+                    console.log(err)
+                    reject(null);
+                }
+                resolve(results);
+            })
+        })
+        
+    }
+
+
+    
 }
